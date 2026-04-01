@@ -4,6 +4,7 @@ import { createContext, useEffect, useState, useContext } from "react";
 
 interface AuthContextType {
   user: User | null;
+  isLoading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -14,6 +15,7 @@ export default function AuthProvider({
   children: React.ReactNode;
 }) {
   const [neonUser, setNeonUser] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     async function loadUser() {
@@ -27,13 +29,15 @@ export default function AuthProvider({
         }
       } catch (error) {
         setNeonUser(null);
+      } finally {
+        setIsLoading(false);
       }
     }
     loadUser();
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user: neonUser }}>
+    <AuthContext.Provider value={{ user: neonUser, isLoading }}>
       {children}
     </AuthContext.Provider>
   );
