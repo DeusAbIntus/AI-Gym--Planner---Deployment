@@ -18,7 +18,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 //  API Routes
-app.use("/api/plans", planRouter);
+app.use("/api/plan", planRouter);
 app.use("/api/profile", profileRouter);
 
 app.listen(PORT, () => {
