@@ -1,15 +1,15 @@
+import { api } from "../lib/api";
+import { authClient } from "../lib/auth";
+import type { TrainingPlan, User, UserProfile } from "../types";
 import {
   createContext,
-  useCallback,
-  useContext,
   useEffect,
-  useRef,
   useState,
+  useContext,
   type ReactNode,
+  useCallback,
+  useRef,
 } from "react";
-import type { TrainingPlan, User, UserProfile } from "../types";
-import { authClient } from "../lib/auth";
-import { api } from "../lib/api";
 
 interface AuthContextType {
   user: User | null;
@@ -26,27 +26,26 @@ const AuthContext = createContext<AuthContextType | null>(null);
 
 export default function AuthProvider({ children }: { children: ReactNode }) {
   const [neonUser, setNeonUser] = useState<any>(null);
-  const [plan, setPlan] = useState<TrainingPlan | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [plan, setPlan] = useState<TrainingPlan | null>(null);
   const isRefreshingRef = useRef(false);
 
   useEffect(() => {
     async function loadUser() {
       try {
-        const result = await authClient.getSession();
-        if (result && result.data?.user) {
-          setNeonUser(result.data.user);
-          console.log("AuthContext: User loaded, isLoading set to false");
+        const res = await authClient.getSession();
+
+        if (res && res.data?.user) {
+          setNeonUser(res.data.user);
         } else {
           setNeonUser(null);
         }
-      } catch (err) {
+      } catch (error) {
         setNeonUser(null);
       } finally {
         setIsLoading(false);
       }
     }
-
     loadUser();
   }, []);
 
@@ -54,7 +53,6 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     if (!isLoading) {
       if (neonUser?.id) {
         refreshData();
-        console.log("AuthContext: User ID detected, refreshing data");
       } else {
         setPlan(null);
       }
@@ -62,7 +60,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [neonUser?.id, isLoading]);
 
-  // refreshData memoize
+  // memoize user data
   const refreshData = useCallback(async () => {
     if (!neonUser || isRefreshingRef.current) return;
 
@@ -80,9 +78,13 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
           version: planData.version,
           createdAt: planData.createdAt,
         });
+        console.log("Plan data refreshed");
+      } else {
+        setPlan(null);
       }
     } catch (error) {
       console.error("Error refreshing data:", error);
+      setPlan(null);
     } finally {
       isRefreshingRef.current = false;
     }

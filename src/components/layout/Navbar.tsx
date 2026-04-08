@@ -21,7 +21,7 @@ export default function Navbar() {
           {user ? (
             <>
               <Link to="/profile">
-                <Button variant="ghost" size="sm">
+                <Button variant="secondary" size="sm">
                   My Plan
                 </Button>
               </Link>
