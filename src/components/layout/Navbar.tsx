@@ -19,25 +19,30 @@ export default function Navbar() {
 
         <nav>
           {user ? (
-            <>
+            <div className="flex items-center gap-4">
+              <Link to="/onboarding">
+                <Button variant="secondary" size="sm">
+                  New Plan
+                </Button>
+              </Link>
               <Link to="/profile">
                 <Button variant="secondary" size="sm">
                   My Plan
                 </Button>
               </Link>
               <UserButton className="bg-(--color-accent)" />
-            </>
+            </div>
           ) : (
-            <>
+            <div className="flex items-center gap-4">
               <Link to="/auth/sign-in">
-                <Button variant="ghost" size="sm">
+                <Button variant="secondary" size="sm">
                   Sign In
                 </Button>
               </Link>
               <Link to="/auth/sign-up">
                 <Button size="sm">Sign Up</Button>
               </Link>
-            </>
+            </div>
           )}
         </nav>
       </div>

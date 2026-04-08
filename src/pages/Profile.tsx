@@ -9,7 +9,7 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { Card } from "../components/ui/Card";
-import { PlanDisplay } from "../components/plan/PlanDisplay";
+import { PlanDisplay } from "../components/layout/PlanDisplay";
 
 export default function Profile() {
   const { user, isLoading, plan, generatePlan } = useAuth();
