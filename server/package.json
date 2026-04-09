@@ -2,10 +2,10 @@
   "name": "server",
   "version": "1.0.0",
   "description": "",
-  "main": "index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev:server": "tsx watch src/index.ts"
+    "dev:server": "tsx watch src/index.ts",
+    "start": "tsx src/index.ts"
   },
   "keywords": [],
   "author": "",

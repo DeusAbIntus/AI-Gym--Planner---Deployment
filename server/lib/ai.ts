@@ -25,7 +25,7 @@ export async function generateTrainingPlan(
     apiKey,
     baseURL: "https://openrouter.ai/api/v1",
     defaultHeaders: {
-      "HTTP-Referer": process.env.BASE_URL || "http://localhost:3001",
+      "HTTP-Referer": process.env.BASE_URL,
       "X-Title": "GymAI Plan Generator",
     },
   });

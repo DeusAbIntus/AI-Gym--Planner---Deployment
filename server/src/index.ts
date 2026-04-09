@@ -10,10 +10,16 @@ dotenv.config();
 
 // config
 const app = express();
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3000;
 
 // middlewares
-app.use(cors());
+app.use(
+  cors({
+    origin: process.env.CORS_URL || "http://localhost:5173",
+    credentials: true,
+  }),
+);
+// app.use(cors()); ---> This is the default CORS configuration, which allows all origins. In production, you should specify the allowed origins for better security.
 app.use(express.json());
 app.use(cookieParser());
 
