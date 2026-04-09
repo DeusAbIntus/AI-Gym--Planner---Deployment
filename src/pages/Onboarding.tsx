@@ -2,12 +2,12 @@ import { RedirectToSignIn, SignedIn } from "@neondatabase/neon-js/auth/react";
 import { useAuth } from "../context/AuthContext";
 import { Card } from "../components/ui/Card";
 import { Select } from "../components/ui/Select";
-import { use, useState } from "react";
+import { useState } from "react";
 import { Textarea } from "../components/ui/Textarea";
 import { Button } from "../components/ui/Button";
 import { Dumbbell, Loader2 } from "lucide-react";
 import type { UserProfile } from "../types";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const goalOptions = [
   { value: "bulk", label: "Build Muscle (Bulk)" },
@@ -63,7 +63,7 @@ export default function Onboarding() {
     preferredSplit: "upper_lower",
   });
   const [isGenerating, setIsGenerating] = useState(false);
-  const [error, setError] = useState("");
+  // const [error, setError] = useState("");
   const navigate = useNavigate();
 
   function updateForm(field: string, value: string) {
@@ -90,7 +90,8 @@ export default function Onboarding() {
       await generatePlan();
       navigate("/profile");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to save Profile.");
+      // setError(err instanceof Error ? err.message : "Failed to save Profile.");
+      console.log("Error during onboarding:", err);
     } finally {
       setIsGenerating(false);
     }
