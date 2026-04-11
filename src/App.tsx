@@ -1,4 +1,11 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter,
+  Route,
+  Routes,
+  useNavigate,
+  Link as RouterLink,
+} from "react-router-dom";
+import type { ReactNode } from "react";
 import Home from "./pages/Home";
 import Onboarding from "./pages/Onboarding";
 import Profile from "./pages/Profile";
@@ -9,25 +16,54 @@ import { NeonAuthUIProvider } from "@neondatabase/neon-js/auth/react";
 import { authClient } from "./lib/auth";
 import AuthProvider from "./context/AuthContext";
 
-export default function App() {
+function NeonRouterLink({
+  href,
+  className,
+  children,
+}: {
+  href: string;
+  className?: string;
+  children: ReactNode;
+}) {
   return (
-    <NeonAuthUIProvider authClient={authClient} defaultTheme="dark">
+    <RouterLink to={href} className={className}>
+      {children}
+    </RouterLink>
+  );
+}
+
+function AppRoutes() {
+  const navigate = useNavigate();
+
+  return (
+    <NeonAuthUIProvider
+      authClient={authClient}
+      defaultTheme="dark"
+      navigate={navigate}
+      Link={NeonRouterLink}
+    >
       <AuthProvider>
-        <BrowserRouter>
-          <div className="min-h-screen flex flex-col">
-            <Navbar />
-            <main className="flex-1">
-              <Routes>
-                <Route index element={<Home />} />
-                <Route path="/onboarding" element={<Onboarding />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/auth/:pathname" element={<Auth />} />
-                <Route path="/account/:pathname" element={<Account />} />
-              </Routes>
-            </main>
-          </div>
-        </BrowserRouter>
+        <div className="min-h-screen flex flex-col">
+          <Navbar />
+          <main className="flex-1">
+            <Routes>
+              <Route index element={<Home />} />
+              <Route path="/onboarding" element={<Onboarding />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/auth/:pathname" element={<Auth />} />
+              <Route path="/account/:pathname" element={<Account />} />
+            </Routes>
+          </main>
+        </div>
       </AuthProvider>
     </NeonAuthUIProvider>
+  );
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <AppRoutes />
+    </BrowserRouter>
   );
 }
