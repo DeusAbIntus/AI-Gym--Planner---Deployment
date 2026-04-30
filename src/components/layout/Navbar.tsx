@@ -2,7 +2,7 @@ import { BicepsFlexed } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "../ui/Button";
 import { useAuth } from "../../context/AuthContext";
-import { UserButton } from "@neondatabase/neon-js/auth/react";
+import { UserButton } from "@neondatabase/neon-js/auth/react/ui";
 
 export default function Navbar() {
   const { user } = useAuth();

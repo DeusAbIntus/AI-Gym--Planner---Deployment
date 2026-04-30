@@ -15,6 +15,7 @@ interface AuthContextType {
   user: User | null;
   plan: TrainingPlan | null;
   isLoading: boolean;
+  signOut: () => Promise<void>;
   saveProfile: (
     profile: Omit<UserProfile, "userId" | "updatedAt">,
   ) => Promise<void>;
@@ -108,12 +109,19 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     await refreshData();
   }
 
+  async function signOut() {
+    await authClient.signOut();
+    setNeonUser(null);
+    setPlan(null);
+  }
+
   return (
     <AuthContext.Provider
       value={{
         user: neonUser,
         plan,
         isLoading,
+        signOut,
         saveProfile,
         generatePlan,
         refreshData,
