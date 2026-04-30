@@ -2,10 +2,18 @@ import { BicepsFlexed } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "../ui/Button";
 import { useAuth } from "../../context/AuthContext";
-import { UserButton } from "@neondatabase/neon-js/auth/react/ui";
+// import { UserButton } from "@neondatabase/neon-js/auth/react/ui";
+import { useNavigate } from "react-router-dom";
 
 export default function Navbar() {
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  async function handleSignOut() {
+    await signOut();
+    navigate("/");
+  }
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-[var(--color-border)] bg-[var(--color-background)]/80 backdrop-blur-md">
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
@@ -25,12 +33,17 @@ export default function Navbar() {
                   New Plan
                 </Button>
               </Link>
+
               <Link to="/profile">
                 <Button variant="secondary" size="sm">
                   My Plan
                 </Button>
               </Link>
-              <UserButton className="bg-(--color-accent)" />
+              {/* <UserButton className="bg-(--color-accent)" /> */}
+
+              <Button variant="ghost" size="sm" onClick={handleSignOut}>
+                Sign Out
+              </Button>
             </div>
           ) : (
             <div className="flex items-center gap-4">

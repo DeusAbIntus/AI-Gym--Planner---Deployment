@@ -110,9 +110,12 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   async function signOut() {
-    await authClient.signOut();
-    setNeonUser(null);
-    setPlan(null);
+    try {
+      await authClient.signOut();
+    } finally {
+      setNeonUser(null);
+      setPlan(null);
+    }
   }
 
   return (
