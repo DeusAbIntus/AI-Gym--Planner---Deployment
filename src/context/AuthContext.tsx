@@ -16,6 +16,7 @@ interface AuthContextType {
   plan: TrainingPlan | null;
   isLoading: boolean;
   signOut: () => Promise<void>;
+  refreshAuth: () => Promise<void>;
   saveProfile: (
     profile: Omit<UserProfile, "userId" | "updatedAt">,
   ) => Promise<void>;
@@ -31,37 +32,49 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const isRefreshingRef = useRef(false);
 
-  useEffect(() => {
-    async function loadUser() {
-      try {
-        const result = await authClient.getSession();
-        if (result && result.data?.user) {
-          setNeonUser(result.data.user);
-          console.log("AuthContext: User loaded, isLoading set to false");
-        } else {
-          setNeonUser(null);
-        }
-      } catch (err) {
-        setNeonUser(null);
-      } finally {
-        setIsLoading(false);
-      }
-    }
+  // useEffect(() => {
+  //   async function loadUser() {
+  //     try {
+  //       const result = await authClient.getSession();
+  //       if (result && result.data?.user) {
+  //         setNeonUser(result.data.user);
+  //         console.log("AuthContext: User loaded, isLoading set to false");
+  //       } else {
+  //         setNeonUser(null);
+  //       }
+  //     } catch (err) {
+  //       setNeonUser(null);
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   }
 
-    loadUser();
+  //   loadUser();
+  // }, []);
+
+  const refreshAuth = useCallback(async () => {
+    try {
+      setIsLoading(true);
+
+      const result = await authClient.getSession();
+
+      if (result?.data?.user) {
+        setNeonUser(result.data.user);
+      } else {
+        setNeonUser(null);
+        setPlan(null);
+      }
+    } catch (err) {
+      setNeonUser(null);
+      setPlan(null);
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
 
   useEffect(() => {
-    if (!isLoading) {
-      if (neonUser?.id) {
-        refreshData();
-        console.log("AuthContext: User ID detected, refreshing data");
-      } else {
-        setPlan(null);
-      }
-      setIsLoading(false);
-    }
-  }, [neonUser?.id, isLoading]);
+    refreshAuth();
+  }, [refreshAuth]);
 
   // refreshData memoize
   const refreshData = useCallback(async () => {
@@ -88,6 +101,17 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
       isRefreshingRef.current = false;
     }
   }, [neonUser?.id]);
+
+  useEffect(() => {
+    if (!isLoading) {
+      if (neonUser?.id) {
+        refreshData();
+        console.log("AuthContext: User ID detected, refreshing data");
+      } else {
+        setPlan(null);
+      }
+    }
+  }, [neonUser?.id, isLoading, refreshData]);
 
   async function saveProfile(
     profileData: Omit<UserProfile, "userId" | "updatedAt">,
@@ -128,6 +152,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
         saveProfile,
         generatePlan,
         refreshData,
+        refreshAuth,
       }}
     >
       {children}
