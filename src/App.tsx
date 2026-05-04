@@ -3,9 +3,11 @@ import {
   Route,
   Routes,
   useNavigate,
+  useLocation,
   Link as RouterLink,
 } from "react-router-dom";
 import type { ReactNode } from "react";
+import { useEffect } from "react";
 import Home from "./pages/Home";
 import Onboarding from "./pages/Onboarding";
 import Profile from "./pages/Profile";
@@ -14,7 +16,18 @@ import Account from "./pages/Account";
 import Navbar from "./components/layout/Navbar";
 import { NeonAuthUIProvider } from "@neondatabase/neon-js/auth/react";
 import { authClient } from "./lib/auth";
-import AuthProvider from "./context/AuthContext";
+import AuthProvider, { useAuth } from "./context/AuthContext";
+
+function AuthSessionSync() {
+  const location = useLocation();
+  const { refreshAuth } = useAuth();
+
+  useEffect(() => {
+    refreshAuth();
+  }, [location.pathname, refreshAuth]);
+
+  return null;
+}
 
 function NeonRouterLink({
   href,
@@ -43,6 +56,8 @@ function AppRoutes() {
       Link={NeonRouterLink}
     >
       <AuthProvider>
+        <AuthSessionSync />
+
         <div className="min-h-screen flex flex-col">
           <Navbar />
           <main className="flex-1">

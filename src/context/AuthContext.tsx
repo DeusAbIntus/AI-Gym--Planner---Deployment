@@ -57,6 +57,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
       setIsLoading(true);
 
       const result = await authClient.getSession();
+      console.log("refreshAuth result:", result);
 
       if (result?.data?.user) {
         setNeonUser(result.data.user);
@@ -71,10 +72,6 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
       setIsLoading(false);
     }
   }, []);
-
-  useEffect(() => {
-    refreshAuth();
-  }, [refreshAuth]);
 
   // refreshData memoize
   const refreshData = useCallback(async () => {

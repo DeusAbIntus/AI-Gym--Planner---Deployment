@@ -12,17 +12,12 @@
 //   );
 // }
 import { AuthView } from "@neondatabase/neon-js/auth/react";
-import { useEffect } from "react";
 import { Navigate, useParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 export default function Auth() {
   const { pathname } = useParams();
-  const { user, isLoading, refreshAuth } = useAuth();
-
-  useEffect(() => {
-    refreshAuth();
-  }, [pathname, refreshAuth]);
+  const { user, isLoading } = useAuth();
 
   if (!isLoading && user) {
     return <Navigate to="/profile" replace />;
